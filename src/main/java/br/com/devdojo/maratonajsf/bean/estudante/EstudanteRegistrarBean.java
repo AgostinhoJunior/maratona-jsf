@@ -2,12 +2,16 @@ package br.com.devdojo.maratonajsf.bean.estudante;
 
 import br.com.devdojo.maratonajsf.model.Estudante;
 
+import javax.el.LambdaExpression;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
 @Named
+@ViewScoped
 public class EstudanteRegistrarBean implements Serializable {
 
     private Estudante estudante = new Estudante();
@@ -15,7 +19,8 @@ public class EstudanteRegistrarBean implements Serializable {
     private List<String> nomesList = Arrays.asList("William", "Wildnei", "Brenner");
     private Set<String> nomesSet = new HashSet<>(Arrays.asList("dinei", "gohan", "gabriela"));
     private Map<String, String> nomesMap = new HashMap<>();
-    private boolean mostrarNotas = true;
+    private boolean mostrarNotas = false;
+    private boolean mostrarLink = false;
 
     {
         nomesMap.put("Goku", " o mais forte");
@@ -27,6 +32,27 @@ public class EstudanteRegistrarBean implements Serializable {
 //            System.out.println(entry.getValue());
 //        }
 
+    }
+
+    public void exibirNotas() {
+        this.mostrarNotas = true;
+    }
+
+    public void esconderNotas() {
+        this.mostrarNotas = false;
+    }
+
+    public void exibirLink() {
+        this.mostrarLink = true;
+    }
+
+    public void esconderLink() {
+        this.mostrarLink = false;
+    }
+
+    public void calcularCubo(LambdaExpression le, long value) {
+       long result = (long) le.invoke(FacesContext.getCurrentInstance().getELContext(), value);
+        System.out.println(result);
     }
 
     public void executar() {
@@ -95,5 +121,13 @@ public class EstudanteRegistrarBean implements Serializable {
 
     public void setMostrarNotas(boolean mostrarNotas) {
         this.mostrarNotas = mostrarNotas;
+    }
+
+    public boolean isMostrarLink() {
+        return mostrarLink;
+    }
+
+    public void setMostrarLink(boolean mostrarLink) {
+        this.mostrarLink = mostrarLink;
     }
 }

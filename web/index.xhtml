@@ -4,9 +4,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<h:head>
+
+</h:head>
 
 <h:body>
+    <c:set var="numeroList" value="#{[1,2,3,4,5,6,7,8,9,10]}"/>
 
     <p:importEnum type="br.com.devdojo.maratonajsf.model.enums.Turno" var="Turno" allSuffix="ALL_ENUM_VALUES"/>
 
@@ -83,15 +90,76 @@
         <h:outputLabel value="#{nome}" style="color: #{status.index mod 2 == 0 ? 'red' : 'green'}"/><br/>
     </ui:repeat>
 
-    <h:outputText value="#{estudanteRegistrarBean.estudante.nome}"/>
-    <h:outputText value="#{estudanteRegistrarBean.estudante.sobrenome}"/>
-    <h:outputText value="#{estudanteRegistrarBean.estudante.turno}"/>
-    <h:outputText value="#{estudanteRegistrarBean.estudante.nota1}"
-                  rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
-    <h:outputText value="#{estudanteRegistrarBean.estudante.nota2}"
-                  rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
-    <h:outputText value="#{estudanteRegistrarBean.estudante.nota3}"
-                  rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
+    <h:form>
+        <h:commandButton value="Exibir Notas">
+            <f:ajax render="notasGrid" listener="#{estudanteRegistrarBean.exibirNotas()}"></f:ajax>
+        </h:commandButton>
+        <h:commandButton value="Esconder Notas">
+            <f:ajax render="notasGrid" listener="#{estudanteRegistrarBean.esconderNotas()}"></f:ajax>
+        </h:commandButton>
+        <h:panelGrid id="notasGrid">
+            <h:outputLabel value="#{estudanteRegistrarBean.estudante.nome}"/>
+            <h:outputLabel value="#{estudanteRegistrarBean.estudante.sobrenome}"/>
+            <h:outputLabel value="#{estudanteRegistrarBean.estudante.turno}"
+                           rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
+            <h:outputLabel value="#{estudanteRegistrarBean.estudante.nota1}"
+                           rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
+            <h:outputLabel value="#{estudanteRegistrarBean.estudante.nota2}"
+                           rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
+            <h:outputLabel value="#{estudanteRegistrarBean.estudante.nota3}"
+                           rendered="#{estudanteRegistrarBean.mostrarNotas}"/>
+        </h:panelGrid><br/>
+
+        <h:commandButton value="Exibir Link">
+            <f:ajax render="pgLink" listener="#{estudanteRegistrarBean.exibirLink()}"></f:ajax>
+        </h:commandButton>
+        <h:commandButton value="Esconder Link">
+            <f:ajax render="pgLink" listener="#{estudanteRegistrarBean.esconderLink()}"></f:ajax>
+        </h:commandButton>
+        <h:panelGroup id="pgLink">
+            <ui:fragment id="fragmentLink" rendered="#{estudanteRegistrarBean.mostrarLink}">
+                <a href="http://www.google.com.br" target="_blank">www.google.com.br</a>
+            </ui:fragment>
+        </h:panelGroup>
+
+    </h:form>
+
+    <!--Lambdas-->
+    #{(soma -> soma + num) (10)}
+    #{((v1, v2, v3) -> v1*v2*v3) (1,5,10)}
+    #{(x -> x*x*x) (2)}
+    #{cubo = (x -> x*x*x); cubo(10)}
+    #{cubo(10)}
+
+    <h:form>
+        <h:commandButton value="Calcular Cubo" actionListener="#{estudanteRegistrarBean.calcularCubo((x->x*x*x),10)}"/>
+    </h:form>
+
+    <!--Lists-->
+
+    <ui:repeat value="#{['DevDojo', 'eh', 'foda']}" var="fodeza">
+        #{fodeza}
+    </ui:repeat><br/>
+
+    <!--Set-->
+    <ui:repeat value="#{{'DevDojo', 'eh', 'foda','foda'}}" var="fodeza">
+        #{fodeza}
+    </ui:repeat><br/>
+
+    <!--Map-->
+    <!--    <ui:repeat value="#{{'Melhor Lugar' : 'DevDojo', 'Melhor curso' : 'maratonas' }}" var="fodezaMap">-->
+    <!--        <ui:repeat value="#{fodezaMap.entrySet().toArray()}" var="entry">-->
+    <!--            #{entry.key} - #{entry.value}-->
+    <!--        </ui:repeat>-->
+    <!--    </ui:repeat><br/>-->
+
+    <ui:repeat value="#{numeroList.stream().filter(v -> v>5).toList()}" var="result">
+        #{result}
+    </ui:repeat><br/>
+
+    #{numeroList.stream().average().get()}<br/>
+    #{numeroList.stream().sum()}<br/>
+    #{numeroList.stream().filter(v -> v>5).sum()}<br/>
 
 
     <!-- Palavras reservadas
